@@ -5,9 +5,9 @@ import sys
 from matplotlib import pyplot as plt
 sys.setrecursionlimit(10000)
 
-#3_8.pngÅĞ¶ÏÓĞ´í
+
 src = cv2.imread("4_1.png")
-#µ÷ÕûÍ¼Ïñ
+#è°ƒæ•´å›¾åƒ
 y,x,channel = src.shape
 if x >= y :
     img = cv2.resize\
@@ -31,7 +31,7 @@ area = x * y
 b = np.zeros((y,x),np.uint8)
 g = np.zeros((y,x),np.uint8)
 r = np.zeros((y,x),np.uint8)
-#ÓÃ°×Æ½ºâ·¨½â¾öÆ«É«ÎÊÌâ(²»ºÃ)
+#ç”¨ç™½å¹³è¡¡æ³•è§£å†³åè‰²é—®é¢˜(ä¸å¥½)
 
 b = img[:,:,0].copy()
 
@@ -39,7 +39,7 @@ b = img[:,:,0].copy()
 g = img[:,:,1].copy()
 r = img[:,:,2].copy()
 
-#bgr×ªycgcr
+#bgrè½¬ycgcr
 A = np.array([[65.481, 128.553, 24.966],[-81.085, 112, -30.915],[112, -93.768, -18.214]])
 B = np.array([[16],[128],[128]])
 C = np.repeat(B,x,1)
@@ -59,7 +59,7 @@ for j in range(y):
 print ycgcr
 cv2.waitKey(0)
 '''
-#»ìºÏ¸ßË¹Ä£ĞÍ
+#æ··åˆé«˜æ–¯æ¨¡å‹
 
 y,x, channel = ycgcr.shape
 like = np.zeros((y,x),np.float64)
@@ -85,15 +85,15 @@ cv2.waitKey(0)
 
 print "min_like",np.amin(like)
 cv2.waitKey(0)
-#½«[0,1]µÄlike×ª»»³É[0,255]µÄgray
+#å°†[0,1]çš„likeè½¬æ¢æˆ[0,255]çš„gray
 
 
 
 print"ok"
 
 if np.amin(like) < 0.1:
-    #method 1,µ¥´¿ÓÃÉ«²ÊÊ¶±ğÓĞÈ±Ïİ£¨ÒÔºó¿ÉÒÔ½áºÏ»ùÓÚ±ßÔµµÄÍ¼Ïñ·Ö¸î£©
-    #Ö±½ÓÏÈÈ¥Ôë£¬ÔÙÓÃotsu
+    #method 1,å•çº¯ç”¨è‰²å½©è¯†åˆ«æœ‰ç¼ºé™·ï¼ˆä»¥åå¯ä»¥ç»“åˆåŸºäºè¾¹ç¼˜çš„å›¾åƒåˆ†å‰²ï¼‰
+    #ç›´æ¥å…ˆå»å™ªï¼Œå†ç”¨otsu
     gray = np.uint8(like * 255)
     gray_temp = cv2.medianBlur(gray,5)
     ret_gray,mask = cv2.threshold(gray_temp,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -104,17 +104,17 @@ if np.amin(like) < 0.1:
 
 
 
-    #ĞŞ²¹
+    #ä¿®è¡¥
     ret,mask = cv2.threshold(mask,0,1,cv2.THRESH_BINARY)
 
-    #±Õ²Ù×÷
+    #é—­æ“ä½œ
     kernel = np.ones((25,25),np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
     ret,mask_close = cv2.threshold(mask,0,255,cv2.THRESH_BINARY)
     cv2.imshow("mask_close",mask_close)
     cv2.waitKey(0)
     '''
-    #¿ª²Ù×÷
+    #å¼€æ“ä½œ
     kernel2 = np.ones((25,25),np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel2)
     '''
@@ -138,18 +138,18 @@ cv2.imshow("output",output)
 cv2.waitKey(0)
 
 
-#0-3¼¶¾²Âö·Ö¼¶(´ÖÏ¸,³¤¶È,Òª¿¼ÂÇÍ¼Ïñ±ÈÀı!!!!)
+#0-3çº§é™è„‰åˆ†çº§(ç²—ç»†,é•¿åº¦,è¦è€ƒè™‘å›¾åƒæ¯”ä¾‹!!!!)
 gray2 = cv2.cvtColor(output,cv2.COLOR_BGR2GRAY)
-#ÓÃgray²»ÓÃdst£¬ÒòÎª¸ßË¹ÂË²¨ÑÓÕ¹ÁËÍÈµÄ±ßÔµ
+#ç”¨grayä¸ç”¨dstï¼Œå› ä¸ºé«˜æ–¯æ»¤æ³¢å»¶å±•äº†è…¿çš„è¾¹ç¼˜
 #ret2,dst2 = cv2.threshold(gray,0,255,cv2.THRESH_BINARY)
 
 
 
-#¶Ôdst2ËõĞ¡£¬È¥³ı¿ÉÄÜ´æÔÚ±³¾°µÄ±ßÔµ²¿·Ö
+#å¯¹dst2ç¼©å°ï¼Œå»é™¤å¯èƒ½å­˜åœ¨èƒŒæ™¯çš„è¾¹ç¼˜éƒ¨åˆ†
 ret,dst = cv2.threshold(gray2,0,255,cv2.THRESH_BINARY)
 
 
-#ÕÒ³öÍÈ£¬È·¶¨±ÈÀı£¨ÂË²¨ËùÓÃµÄºË´óĞ¡£©findContours»á¸Ä±ädst2
+#æ‰¾å‡ºè…¿ï¼Œç¡®å®šæ¯”ä¾‹ï¼ˆæ»¤æ³¢æ‰€ç”¨çš„æ ¸å¤§å°ï¼‰findContoursä¼šæ”¹å˜dst2
 dst_temp = dst.copy()
 contours, hierarchy = \
           cv2.findContours(dst_temp,cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
@@ -160,7 +160,7 @@ j = 0
 #max_area = -1
 #max_num = -1
 
-#[ĞòºÅ][Ãæ»ı]
+#[åºå·][é¢ç§¯]
 max_leg = np.array([[-1,-1],[0,0]])
 
 while j < i:
@@ -181,7 +181,7 @@ while j < i:
     
 print max_leg
 cv2.waitKey(0)
-#Èç¹ûÃæ»ı×î´óµÄÁ½¿éÏà²îĞ¡£¬ÔòÈÏÎªÓĞ2ÌõÍÈ,È¡ÖØĞÄ,opencvº¯Êı»ñµÃµÄ¾ØxÖáÊÇºáÖá£¬yÖáÊÇÊúÖá
+#å¦‚æœé¢ç§¯æœ€å¤§çš„ä¸¤å—ç›¸å·®å°ï¼Œåˆ™è®¤ä¸ºæœ‰2æ¡è…¿,å–é‡å¿ƒ,opencvå‡½æ•°è·å¾—çš„çŸ©xè½´æ˜¯æ¨ªè½´ï¼Œyè½´æ˜¯ç«–è½´
 x , y = dst.shape
 output2 = np.zeros((x,y,3), np.uint8)
 
@@ -215,7 +215,7 @@ cv2.waitKey(0)
 output2 = cv2.cvtColor(output2,cv2.COLOR_BGR2GRAY)
 
 
-#¿ª²Ù×÷
+#å¼€æ“ä½œ
 kernel2 = np.ones((25,25),np.uint8)
 output2 = cv2.morphologyEx(output2, cv2.MORPH_OPEN, kernel2)
 
@@ -248,13 +248,13 @@ cv2.waitKey(0)
 print w,h
 cv2.waitKey(0)
 
-Min = min(w,h)#ÍÈµÄ´ÖÏ¸
-Max = max(w,h)#ÍÈµÄ³¤¶È
+Min = min(w,h)#è…¿çš„ç²—ç»†
+Max = max(w,h)#è…¿çš„é•¿åº¦
 
 print Min
 cv2.waitKey(0)
 
-########Í¼Æ¬Ğı×ª£¬Ê¹ÍÈ´óÖÂÊÇÊúÖ±µÄ#########
+########å›¾ç‰‡æ—‹è½¬ï¼Œä½¿è…¿å¤§è‡´æ˜¯ç«–ç›´çš„#########
 '''
 rotation_need = 0
 if w >= h:
@@ -361,7 +361,7 @@ gray3 =  cv2.bitwise_and(gray3,mask_output2)
 cv2.imshow("gray3",gray3)
 cv2.waitKey(0)
 
-#ÍÈ²¿ÁÁ¶È¹éÒ»»¯
+#è…¿éƒ¨äº®åº¦å½’ä¸€åŒ–
 def normalization(pic,mask):
     cv2.normalize(pic,pic,255,0,cv2.NORM_MINMAX,-1,mask)
     return pic
@@ -370,21 +370,21 @@ gray3 = normalization(gray3,mask_output2)
 cv2.imshow("gray3_normalization",gray3)
 cv2.waitKey(0)
 '''
-#½«Í¼Æ¬ÇĞ¸î,¼ÆËã¾ùÖµ·½²î
+#å°†å›¾ç‰‡åˆ‡å‰²,è®¡ç®—å‡å€¼æ–¹å·®
 
 '''
 means = np.zeros((piece1,piece2),np.float64)
 standards = np.zeros((piece1,piece2),np.float64)
-contrasts = np.zeros((piece1,piece2,4),np.float64)#·Ö±ğÊÇ0,45,90,135
-ASMs = np.zeros((piece1,piece2),np.float64)#Ö»È¡Ë®Æ½·½Ïò
+contrasts = np.zeros((piece1,piece2,4),np.float64)#åˆ†åˆ«æ˜¯0,45,90,135
+ASMs = np.zeros((piece1,piece2),np.float64)#åªå–æ°´å¹³æ–¹å‘
 
-C = np.zeros((piece1,piece2),np.float64)#Ïà¶Ô¶Ô±È¶È
+C = np.zeros((piece1,piece2),np.float64)#ç›¸å¯¹å¯¹æ¯”åº¦
 
-S = np.zeros((piece1,piece2),np.float64)#Ïà¶Ô±ê×¼²î
+S = np.zeros((piece1,piece2),np.float64)#ç›¸å¯¹æ ‡å‡†å·®
 
-M = np.zeros((piece1,piece2),np.float64)#Ïà¶Ô¾ùÖµ
+M = np.zeros((piece1,piece2),np.float64)#ç›¸å¯¹å‡å€¼
 '''
-#shapeµÃµ½µÄÊÇ£¨y,x£©
+#shapeå¾—åˆ°çš„æ˜¯ï¼ˆy,xï¼‰
 y,x = gray3.shape
 print x,y
 cv2.waitKey(0)
@@ -408,7 +408,7 @@ print piece1,piece2
 print "distance",distance
 cv2.waitKey(0)
 '''
-#Ëã¾ùÖµ±ê×¼²î
+#ç®—å‡å€¼æ ‡å‡†å·®
 def cal(m):
     result = np.zeros((2),np.float64)
     result[0] = np.mean(m)
@@ -416,7 +416,7 @@ def cal(m):
     return result
 '''
 
-#ÅĞ¶Ï·½¸ñÊÇ·ñÔÚÍÈÄÚ
+#åˆ¤æ–­æ–¹æ ¼æ˜¯å¦åœ¨è…¿å†…
 def contain(j,i):
     matrix =  output2_temp[(j) * stepy : (j + 1) * stepy,(i) * stepx : (i + 1) * stepx ]
     result = np.sum(matrix)
@@ -427,7 +427,7 @@ def contain(j,i):
         return 1
     else:
         return 0
-#Ëã»Ò¶È¹²Éú¾ØÕó
+#ç®—ç°åº¦å…±ç”ŸçŸ©é˜µ
 
 row = np.array([[1],[2],[3],[4],[5],[6],[7],[8]])
 r = np.repeat(row,8,1)
@@ -491,13 +491,13 @@ for j in range(piece1):
         print co_vertical
         print co_left_diagonal
         '''
-        #¹éÒ»»¯
+        #å½’ä¸€åŒ–
         p_h = co_horizontal / np.float64(np.sum(co_horizontal))
         p_r = co_right_diagonal / np.float64(np.sum(co_right_diagonal))
         p_l = co_left_diagonal / np.float64(np.sum(co_left_diagonal))
         p_v = co_vertical / np.float64(np.sum(co_vertical))
         '''
-        #¾ùÖµ
+        #å‡å€¼
         gi = np.arange(1,9)
         gj = np.arange(1,9)
         pi = np.sum(p,axis = 1)
@@ -512,15 +512,15 @@ for j in range(piece1):
         '''
         
         '''
-        #Ïà¹Ø¶È
+        #ç›¸å…³åº¦
         stand = np.sqrt(va_r * va_c)
         if stand != 0:
                relative = np.dot(gi - mr, np.dot(p, gj - mc)) / np.sqrt(va_r * va_c)
                print "relative =" ,relative
         else:
-               print "¾ùÔÈ"
+               print "å‡åŒ€"
         '''
-        #¶Ô±È¶È,À£ÀÃÇøÓòµÄ¶Ô±È¶ÈºÜ´ó£¨¶Ô±È¶È´óÊÇÊ¶±ğÀ£ÀÃµÄ±ØÒª²»³ä·ÖÌõ¼ş£©
+        #å¯¹æ¯”åº¦,æºƒçƒ‚åŒºåŸŸçš„å¯¹æ¯”åº¦å¾ˆå¤§ï¼ˆå¯¹æ¯”åº¦å¤§æ˜¯è¯†åˆ«æºƒçƒ‚çš„å¿…è¦ä¸å……åˆ†æ¡ä»¶ï¼‰
         contrast_h = 0
         contrast_r = 0
         contrast_v = 0
@@ -548,11 +548,11 @@ for j in range(piece1):
             contrasts = np.append(contrasts,[np.average([contrast_h, contrast_r, contrast_v, contrast_l])])
         #print "contrast =", contrast
         
-        #Ò»ÖÂĞÔ
+        #ä¸€è‡´æ€§
         #ASMs[j,i] = np.sum(p_h**2)
         #print "ASM =",ASM
         '''    
-        #Ò»ÖÂĞÔ£¨ÄÜÁ¿£©
+        #ä¸€è‡´æ€§ï¼ˆèƒ½é‡ï¼‰
         ASM_h = 0
         ASM_r = 0
         ASM_v = 0
@@ -580,7 +580,7 @@ ASMs_std = np.std(ASMs)
         p_v += 0.00000001
         p_l += 0.00000001
 
-        #ìØ
+        #ç†µ
         entropy_h = - np.sum(p_h * np.log2(p_h))
         entropy_r = - np.sum(p_r * np.log2(p_r))
         entropy_v = - np.sum(p_v * np.log2(p_v))
@@ -666,7 +666,7 @@ h_avg = np.zeros((number),np.float64)
 s_avg = np.zeros((number),np.float64)
 for a in range(number):
               j,i = pieces[a]
-              #¶Ô±È¶È´ó&&±ê×¼²î´ó
+              #å¯¹æ¯”åº¦å¤§&&æ ‡å‡†å·®å¤§
               h = hsv[stepy * j : stepy * (j + 1), stepx * i : stepx * (i + 1), 0]
               s = hsv[stepy * j : stepy * (j + 1), stepx * i : stepx * (i + 1), 1]
               h_avg[a] = np.average(h)
@@ -688,7 +688,7 @@ gray4 =  cv2.bitwise_and(gray4,mask_temp)
 cv2.imshow("gray4",gray4)
 cv2.waitKey(0)
 '''
-#ÍÈ²¿ÁÁ¶È¹éÒ»»¯µ½50-170
+#è…¿éƒ¨äº®åº¦å½’ä¸€åŒ–åˆ°50-170
 cv2.normalize(gray4,gray4,210,20,cv2.NORM_MINMAX,-1,mask_temp)
 cv2.imshow("gray4_normalization",gray4)
 cv2.waitKey(0)
@@ -777,7 +777,7 @@ rank5 = 0
 '''
     #cv2.rectangle(img2,(x-width,y-width),(2*width,2*width),(0,0,255),1)
     #cv2.rectangle(img2,(x_centroid-width,y_centroid-width),(x_centroid+width,y_centroid+width),(0,0,255),1)
-    # print "6¼¶"
+    # print "6çº§"
     
 s_average = np.average(s_avg)
 s_standard = np.std(s_avg)
@@ -939,7 +939,7 @@ cov_wrong = np.array([[ 19.09419453 ,-25.93495621],[-25.93495621 , 40.36949382]]
 cov_right = np.array([[ 16.42427016, -22.00842461],[-22.00842461 , 36.7027956 ]])
 
 if rotation_need == 1:
-    #bgr×ªycgcr
+    #bgrè½¬ycgcr
     b = img[:,:,0].copy()
     g = img[:,:,1].copy()
     r = img[:,:,2].copy()
@@ -954,7 +954,7 @@ if rotation_need == 1:
              n = CC + 1.0/256 * np.dot(AA,[r[j],g[j],b[j]])
              ycgcr[j] = np.transpose(n)
            
-#»ìºÏ¸ßË¹Ä£ĞÍ
+#æ··åˆé«˜æ–¯æ¨¡å‹
 
 
 #wrong
@@ -1052,7 +1052,7 @@ if flag != 0 :
         '''
         if edges_area[a] >= stepx * stepy / 15:
             print j,i
-            print "6¼¶"
+            print "6çº§"
 
             rank[6] = 6
         else:
@@ -1084,7 +1084,7 @@ if flag != 0 :
 
         if edges_6 >= 2:    
                              print j,i
-                             print "6¼¶"
+                             print "6çº§"
                              rank[a] = 6
                              
                              
@@ -1101,7 +1101,7 @@ if flag != 0 :
 
                
                     rank[a] = 5
-                    print "maybe 5¼¶1"
+                    print "maybe 5çº§1"
                     cv2.waitKey(0)
                     
             else:
@@ -1128,7 +1128,7 @@ if flag != 0 :
                         
                         print C[a],S[a],
                         
-                        print "maybe 5¼¶2"
+                        print "maybe 5çº§2"
                         
                         cv2.waitKey(0)
 
@@ -1148,7 +1148,7 @@ if flag != 0 :
                           
                         print j,i
                         print s_relative[a]          
-                        print "maybe  6¼¶ "
+                        print "maybe  6çº§ "
                         print "edges_area[a]",edges_area[a]
                         print "edges_inner[a]",edges_inner[a]
                         
@@ -1175,7 +1175,7 @@ for a in range(number):
         j,i = pieces[a]
     
         if rank[a] == 0:
-                      if M[a] < -1 :#»Ò¶ÈÖµºÜµÍ£¬µ«ÊÇÒ²ĞèÒªÑÕÉ«Î»ÖÃĞÅÏ¢¸¨Öú£¬·ñÔòÒõÓ°ºÍºÚ°ß·Ö²»¿ª
+                      if M[a] < -1 :#ç°åº¦å€¼å¾ˆä½ï¼Œä½†æ˜¯ä¹Ÿéœ€è¦é¢œè‰²ä½ç½®ä¿¡æ¯è¾…åŠ©ï¼Œå¦åˆ™é˜´å½±å’Œé»‘æ–‘åˆ†ä¸å¼€
                         '''
                        black = 0
                        for m in range(j*stepy, (j+1)*stepy):
@@ -1190,7 +1190,7 @@ for a in range(number):
                         print a
                         print "M",M[a]
                         print "S",S[a]
-                        print "maybe 4¼¶"
+                        print "maybe 4çº§"
                         rank[a] = 4
                         
                         cv2.rectangle(img4,((i) * stepx,(j ) * stepy),\
@@ -1200,11 +1200,11 @@ for a in range(number):
                         
                         
                       
-                      if S[a] > 1.2:#»Ò¶ÈÖµºÜµÍ£¬µ«ÊÇÒ²ĞèÒªÑÕÉ«Î»ÖÃĞÅÏ¢¸¨Öú£¬·ñÔòÒõÓ°ºÍºÚ°ß·Ö²»¿ª
+                      if S[a] > 1.2:#ç°åº¦å€¼å¾ˆä½ï¼Œä½†æ˜¯ä¹Ÿéœ€è¦é¢œè‰²ä½ç½®ä¿¡æ¯è¾…åŠ©ï¼Œå¦åˆ™é˜´å½±å’Œé»‘æ–‘åˆ†ä¸å¼€
                             print j,i
                             print a
                             print S[a]
-                            print "4¼¶edge"
+                            print "4çº§edge"
                             rank[a] = 8
                             cv2.rectangle(img4,((i) * stepx,(j ) * stepy),\
                                        ((i + 1) * stepx - 1,(j + 1) * stepy - 1),(0,255,255),1)
@@ -1226,7 +1226,7 @@ if rank_6 == 0 and rank_5 == 1:
         if rank[a] == 7:
             rank[a] = 5
             print j,i
-            print "5¼¶"
+            print "5çº§"
             cv2.rectangle(img2,((i) * stepx,(j ) * stepy),\
                                        ((i + 1) * stepx - 1,(j + 1) * stepy - 1),(255,0,255),1)
 else:
@@ -1235,15 +1235,15 @@ else:
         if rank[a] == 7:
             rank[a] = 6
             print j,i
-            print "6¼¶"
+            print "6çº§"
             cv2.rectangle(img2,((i) * stepx,(j ) * stepy),\
                                        ((i + 1) * stepx - 1,(j + 1) * stepy - 1),(0,0,255),1)
 '''
 
 '''         
-#È¥³ı»Ò¶ÈÖµµÍµ«ÊÇºÜÏ¸µÄµØ·½£¬ÒòÎªºÚ°ßÊÇÒ»´ó¿éµÄ£¬±ßÔµÒõÓ°ºÜÕ­£¬ĞèÒª¿¼ÂÇÍÈµÄ´ÖÏ¸
+#å»é™¤ç°åº¦å€¼ä½ä½†æ˜¯å¾ˆç»†çš„åœ°æ–¹ï¼Œå› ä¸ºé»‘æ–‘æ˜¯ä¸€å¤§å—çš„ï¼Œè¾¹ç¼˜é˜´å½±å¾ˆçª„ï¼Œéœ€è¦è€ƒè™‘è…¿çš„ç²—ç»†
 width_thred = np.int32( Min / 100 )         
-print " ×îÕ­ºÚ°ßÏŞÖÆ",width_thred
+print " æœ€çª„é»‘æ–‘é™åˆ¶",width_thred
 
 
 checked = np.zeros((number),np.uint8)
@@ -1300,14 +1300,14 @@ if maybe_black_edge != 0:
     cv2.waitKey(0)
 '''
 
-#È¥³ı»Ò¶ÈÖµµÍµ«ÊÇºÜÏ¸µÄµØ·½£¬ÒòÎªºÚ°ßÊÇÒ»´ó¿éµÄ£¬±ßÔµÒõÓ°ºÜÕ­£¬ĞèÒª¿¼ÂÇÍÈµÄ´ÖÏ¸
+#å»é™¤ç°åº¦å€¼ä½ä½†æ˜¯å¾ˆç»†çš„åœ°æ–¹ï¼Œå› ä¸ºé»‘æ–‘æ˜¯ä¸€å¤§å—çš„ï¼Œè¾¹ç¼˜é˜´å½±å¾ˆçª„ï¼Œéœ€è¦è€ƒè™‘è…¿çš„ç²—ç»†
 
 
 
 width_thred = 2
 print "max_area / Max",max_area / Max
 print "Min",Min
-print " ×îÕ­ºÚ°ßÏŞÖÆ",width_thred
+print " æœ€çª„é»‘æ–‘é™åˆ¶",width_thred
 
 
 checked = np.zeros((number),np.uint8)
@@ -1341,7 +1341,7 @@ for a in range(number):
                   
                        rank[team[i]] = 0
 
-#######³É¿éµÄºÚ°ß×îÉÙ4¸ö#############
+#######æˆå—çš„é»‘æ–‘æœ€å°‘4ä¸ª#############
 
 '''
 y
@@ -1599,7 +1599,7 @@ for J in range(piece1):
                 
                         if judge_up >= 0.65 or judge_down >= 0.65 or judge_left >= 0.65 or judge_right >= 0.65:  
                             print S[a]
-                            print "4¼¶"
+                            print "4çº§"
                             
                             temp[j,i] = 3
                             cv2.waitKey(0)
@@ -1687,7 +1687,7 @@ for a in range(number):
                 
                 if judge_up >= 0.6 or judge_down >= 0.6:  
                     print S[a]
-                    print "4¼¶"
+                    print "4çº§"
                     rank[a] = 4
                     cv2.waitKey(0)
                    
@@ -1714,7 +1714,7 @@ for a in range(number):
         print "C",C[a]
         print "S",S[a]
         rank[a] = 4
-        print "µÚ2ÖÖ4¼¶"
+        print "ç¬¬2ç§4çº§"
         cv2.rectangle(img2,((i) * stepx,(j ) * stepy),\
                             ((i + 1) * stepx - 1,(j + 1) * stepy - 1),(255,255,255),1)
 '''
@@ -1755,17 +1755,17 @@ def count_4(array):
 
 print  "rank", rank
 if (rank == 6).any():
-    print "ÕâÊÇ6¼¶£¡"
+    print "è¿™æ˜¯6çº§ï¼"
     cv2.imshow("img2",img2)
     cv2.waitKey(0)
 elif (rank == 5).any():
-    print "ÕâÊÇ5¼¶£¡"
+    print "è¿™æ˜¯5çº§ï¼"
     cv2.imshow("img2",img2)
     cv2.waitKey(0)
 elif count_4(rank) >= 6:
     cv2.imshow("img2",img2)
     cv2.waitKey(0)
-    print "ÕâÊÇ4¼¶£¡"
+    print "è¿™æ˜¯4çº§ï¼"
 else:
     rank = np.zeros((number),np.uint8) 
     '''
@@ -1776,7 +1776,7 @@ else:
 
 
            
-    #»ìºÏ¸ßË¹Ä£ĞÍ
+    #æ··åˆé«˜æ–¯æ¨¡å‹
 
 
     #wrong
@@ -1828,8 +1828,8 @@ else:
         print "entropys",entropys[a]
         #print "ASMs",ASMs[a]
         if rank[a] == 0:
-            if M[a] < -1 and C[a]> 1 and contrasts[a] > 0.15:#¿ÉÒÔÔö¼Ó±ê×¼²îÏŞÖÆ
-            #»Ò¶ÈÖµºÜµÍ£¬µ«ÊÇÒ²ĞèÒªÑÕÉ«Î»ÖÃĞÅÏ¢¸¨Öú£¬·ñÔòÒõÓ°ºÍºÚ°ß·Ö²»¿ª
+            if M[a] < -1 and C[a]> 1 and contrasts[a] > 0.15:#å¯ä»¥å¢åŠ æ ‡å‡†å·®é™åˆ¶
+            #ç°åº¦å€¼å¾ˆä½ï¼Œä½†æ˜¯ä¹Ÿéœ€è¦é¢œè‰²ä½ç½®ä¿¡æ¯è¾…åŠ©ï¼Œå¦åˆ™é˜´å½±å’Œé»‘æ–‘åˆ†ä¸å¼€
                              
                 black = 0
                 for m in range(j*stepy, (j+1) * stepy):
@@ -1843,7 +1843,7 @@ else:
                         print j,i
                         #print a
                         
-                        print "maybe 4¼¶"
+                        print "maybe 4çº§"
                         print "contrasts",np.average(contrasts[a])
                         print "standards",standards[a]
                         print "C",C[a]
@@ -1892,7 +1892,7 @@ else:
 
 
     if (rank == 4).any():
-        print "ÕâÊÇ4¼¶£¡"
+        print "è¿™æ˜¯4çº§ï¼"
         for a in range(number):
             j,i = pieces[a]
             if rank[a] == 4:
@@ -1905,7 +1905,7 @@ else:
     else:
                    
         gray5 =  cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        #¶Ôoutput2ËõĞ¡£¬È¥³ı¿ÉÄÜ´æÔÚ±³¾°µÄ±ßÔµ²¿·Ö
+        #å¯¹output2ç¼©å°ï¼Œå»é™¤å¯èƒ½å­˜åœ¨èƒŒæ™¯çš„è¾¹ç¼˜éƒ¨åˆ†
         ret,output2 = cv2.threshold(output2,0,1,cv2.THRESH_BINARY)
         kernel_size = stepx / 3 * 2 + 1
         kernel = np.ones((2 * kernel_size + 1,kernel_size),np.uint8)
@@ -2000,7 +2000,7 @@ else:
 
    
 
-        #¾²ÂöÇúÕÅÃæ»ı
+        #é™è„‰æ›²å¼ é¢ç§¯
         square = np.sum(dst_final)
         ratio = np.float64(Min) / 100
         if leg == 1:
@@ -2010,11 +2010,11 @@ else:
         print square,max_area,judge
         cv2.waitKey(0)
 
-        #´ÖµÄ¾²ÂöÌ«ÉÙ£¬ÔòÊÇ0»ò1¼¶
+        #ç²—çš„é™è„‰å¤ªå°‘ï¼Œåˆ™æ˜¯0æˆ–1çº§
 
-        #ÒòÎªÊ¹ÓÃÃæ»ı¶ø²»ÊÇ³¤¶È×÷ÎªÅĞ¶Ï£¬¾²ÂöÍ¼ÖĞµÄĞ¡µã²»»á¶Ô½á¹ûÔì³ÉºÜ´óµÄÓ°Ïì
+        #å› ä¸ºä½¿ç”¨é¢ç§¯è€Œä¸æ˜¯é•¿åº¦ä½œä¸ºåˆ¤æ–­ï¼Œé™è„‰å›¾ä¸­çš„å°ç‚¹ä¸ä¼šå¯¹ç»“æœé€ æˆå¾ˆå¤§çš„å½±å“
 
-        if judge < 0.001:#¿ÉÒÔ³¢ÊÔcannyËã·¨
+        if judge < 0.001:#å¯ä»¥å°è¯•cannyç®—æ³•
             
             contrast_sort = contrasts[np.argsort(contrasts)]
             contrast_sort = contrast_sort[::-1]
@@ -2025,16 +2025,16 @@ else:
             cv2.waitKey(0)
             
             if  contrast_sort[2] > 0.159:
-                print "ÕâÊÇ1¼¶"
+                print "è¿™æ˜¯1çº§"
             else:
-                print "ÕâÊÇ0¼¶"
+                print "è¿™æ˜¯0çº§"
 
             
             
         elif judge >= 0.001 and judge < 0.03:
-            print "ÕâÊÇ2¼¶"
+            print "è¿™æ˜¯2çº§"
         else:
-            print "ÕâÊÇ3¼¶"
+            print "è¿™æ˜¯3çº§"
     
     
 
